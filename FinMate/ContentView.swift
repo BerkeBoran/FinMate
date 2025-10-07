@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  FinMate
-//
-//  Created by Berke Boran on 7.10.2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {

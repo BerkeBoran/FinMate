@@ -1,13 +1,150 @@
-//
-//  MainView.swift
-//  FinMate
-//
-//  Created by Berke Boran on 7.10.2025.
-//
-
 import SwiftUI
+
 struct MainView: View {
+    @State private var showMenu=false
+    let menuItems: [String]=["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ayarlar"]
+    
     var body: some View {
-        Text("Hello, World!")
+        ZStack(alignment: .leading){
+            if !showMenu{
+                NavigationView {
+                    VStack(spacing: 20) {
+                        Text("Harcamalar")
+                            .font(.largeTitle)
+                            .bold()
+                            .padding(.top, 40)
+                            .navigationBarTitle("FinMate", displayMode: .inline)
+                            .navigationBarItems(leading: Button(action: {
+                                withAnimation {
+                                    self.showMenu.toggle()
+                                }
+                            }) {
+                                Image(systemName: "line.horizontal.3")
+                                    .imageScale(.large)
+                            })
+                        HStack(spacing: 20) {
+                            Button(action: {
+                            }) {
+                                HStack {
+                                    Image(systemName: "plus.circle")
+                                    Text("Gelir Ekle")
+                                }
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.green)
+                                .cornerRadius(12)
+                                .shadow(radius: 4)
+                            }
+                            
+                            Button(action: {
+                            }) {
+                                HStack {
+                                    Image(systemName: "minus.circle")
+                                    Text("Gider Ekle")
+                                }
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.red)
+                                .cornerRadius(12)
+                                .shadow(radius: 4)
+                            }
+                        }
+                        .padding(.horizontal)
+                        //Grafiğin yeri
+                        VStack(alignment: .leading) {
+                            Text("Harcama Listesi")
+                                .font(.headline)
+                                .padding(.horizontal)
+                            
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(height: 250)
+                                .overlay(
+                                    Text("Liste burada gösterilecek")
+                                        .foregroundColor(.gray)
+                                )
+                                .padding(.horizontal)
+                        }
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 15) {
+                                ForEach(["Food","Transport","Bills","Shopping","Other"], id: \.self) { category in
+                                    VStack {
+                                        Image(systemName: "folder.circle.fill")
+                                            .resizable()
+                                            .frame(width: 50, height: 50)
+                                            .foregroundColor(.blue)
+                                        Text(category)
+                                            .font(.caption)
+                                            .bold()
+                                    }
+                                    .frame(width: 80, height: 100)
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(12)
+                                    .shadow(radius: 2)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        
+                        
+                        Spacer()
+                    }
+                }
+            }
+            else  {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            showMenu = false
+                        }
+                    }
+                
+                MenuView(showMenu: $showMenu,menuItems: menuItems)
+                    .frame(width: 250,height: .leastNonzeroMagnitude )
+                    .background(Color.white)
+                    .transition(.move(edge: .leading))
+                    .zIndex(1)
+                
+            }
+        }
+        
+    }
+}
+struct MenuView: View {
+    @Binding var showMenu: Bool
+    let menuItems: [String]
+    var body: some View {
+        VStack(spacing:20){
+            ForEach(menuItems, id: \.self) { item in
+                Button(action: {
+                    withAnimation {
+                        showMenu = false
+                    }
+                }) {
+                    Text(item)
+                        .foregroundColor(.black)
+                        .padding(.vertical, 25)
+                        .padding(.horizontal)
+                }
+            }
+            Spacer()
+            Button("Kapat") {
+                withAnimation {
+                    showMenu = false
+                }
+            }
+            .padding()
+        }
+        
+    }
+    
+}
+
+struct MainView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainView()
     }
 }
