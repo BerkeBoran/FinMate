@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @StateObject var viewModel = TransactionViewModel()
     @State private var showMenu=false
     let menuItems: [String]=["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ayarlar"]
     
@@ -23,9 +24,8 @@ struct MainView: View {
                                     .imageScale(.large)
                             })
                         HStack(spacing: 20) {
-                            Button(action: {
-                            }) {
-                                HStack {
+                            NavigationLink(destination: AddIncomeView(viewModel: viewModel)) {
+                                HStack{
                                     Image(systemName: "plus.circle")
                                     Text("Gelir Ekle")
                                 }
@@ -33,8 +33,7 @@ struct MainView: View {
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(Color.green)
-                                .cornerRadius(12)
-                                .shadow(radius: 4)
+                                .cornerRadius(10)
                             }
                             
                             Button(action: {

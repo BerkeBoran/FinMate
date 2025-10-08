@@ -12,7 +12,7 @@ enum TransactionType: String, Codable {
 }
 
 struct Transaction: Identifiable, Codable {
-    var id = UUID() 
+    var id = UUID()
     var title: String
     var amount: Double
     var date: Date
