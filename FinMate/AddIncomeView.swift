@@ -11,9 +11,7 @@ struct AddIncomeView: View {
     @ObservedObject var viewModel: TransactionViewModel
     
     @State private var title: String = ""
-    @State private var amount: String = ""
-    @State private var currentBalance: String = ""
-    
+    @State private var amount: String = ""    
     var body: some View {
         VStack(spacing: 20) {
                 Text("Güncel Bakiye: \(viewModel.balance, specifier: "%.2f") TL")
@@ -28,7 +26,7 @@ struct AddIncomeView: View {
                         .padding()
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(10)
-                        .textInputAutocapitalization(.sentences) 
+                        .textInputAutocapitalization(.sentences)
                             .disableAutocorrection(false)
                     
                     Text("Tutar")

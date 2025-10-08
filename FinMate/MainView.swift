@@ -24,6 +24,7 @@ struct MainView: View {
                                     .imageScale(.large)
                             })
                         HStack(spacing: 20) {
+                            
                             NavigationLink(destination: AddIncomeView(viewModel: viewModel)) {
                                 HStack{
                                     Image(systemName: "plus.circle")
@@ -36,9 +37,8 @@ struct MainView: View {
                                 .cornerRadius(10)
                             }
                             
-                            Button(action: {
-                            }) {
-                                HStack {
+                            NavigationLink(destination: AddExpenseView(viewModel: viewModel)){
+                                HStack{
                                     Image(systemName: "minus.circle")
                                     Text("Gider Ekle")
                                 }
@@ -46,104 +46,104 @@ struct MainView: View {
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(Color.red)
-                                .cornerRadius(12)
-                                .shadow(radius: 4)
+                                .cornerRadius(10)
                             }
                         }
-                        .padding(.horizontal)
-                        //Grafiğin yeri
-                        VStack(alignment: .leading) {
-                            Text("Harcama Listesi")
-                                .font(.headline)
-                                .padding(.horizontal)
                             
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(height: 250)
-                                .overlay(
-                                    Text("Liste burada gösterilecek")
-                                        .foregroundColor(.gray)
-                                )
-                                .padding(.horizontal)
-                        }
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 15) {
-                                ForEach(["Food","Transport","Bills","Shopping","Other"], id: \.self) { category in
-                                    VStack {
-                                        Image(systemName: "folder.circle.fill")
-                                            .resizable()
-                                            .frame(width: 50, height: 50)
-                                            .foregroundColor(.blue)
-                                        Text(category)
-                                            .font(.caption)
-                                            .bold()
-                                    }
-                                    .frame(width: 80, height: 100)
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(12)
-                                    .shadow(radius: 2)
-                                }
+                            //Grafiğin yeri
+                            VStack(alignment: .leading) {
+                                Text("Harcama Listesi")
+                                    .font(.headline)
+                                    .padding(.horizontal)
+                                
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(height: 250)
+                                    .overlay(
+                                        Text("Liste burada gösterilecek")
+                                            .foregroundColor(.gray)
+                                    )
+                                    .padding(.horizontal)
                             }
-                            .padding(.horizontal)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 15) {
+                                    ForEach(["Food","Transport","Bills","Shopping","Other"], id: \.self) { category in
+                                        VStack {
+                                            Image(systemName: "folder.circle.fill")
+                                                .resizable()
+                                                .frame(width: 50, height: 50)
+                                                .foregroundColor(.blue)
+                                            Text(category)
+                                                .font(.caption)
+                                                .bold()
+                                        }
+                                        .frame(width: 80, height: 100)
+                                        .background(Color.gray.opacity(0.2))
+                                        .cornerRadius(12)
+                                        .shadow(radius: 2)
+                                    }
+                                }
+                                .padding(.horizontal)
+                            }
+                            
+                            
+                            Spacer()
                         }
-                        
-                        
-                        Spacer()
                     }
                 }
+                else  {
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation {
+                                showMenu = false
+                            }
+                        }
+                    
+                    MenuView(showMenu: $showMenu,menuItems: menuItems)
+                        .frame(width: 250,height: .leastNonzeroMagnitude )
+                        .background(Color.white)
+                        .transition(.move(edge: .leading))
+                        .zIndex(1)
+                    
+                }
             }
-            else  {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture {
+            
+        }
+    }
+    struct MenuView: View {
+        @Binding var showMenu: Bool
+        let menuItems: [String]
+        var body: some View {
+            VStack(spacing:20){
+                ForEach(menuItems, id: \.self) { item in
+                    Button(action: {
                         withAnimation {
                             showMenu = false
                         }
+                    }) {
+                        Text(item)
+                            .foregroundColor(.black)
+                            .padding(.vertical, 25)
+                            .padding(.horizontal)
                     }
-                
-                MenuView(showMenu: $showMenu,menuItems: menuItems)
-                    .frame(width: 250,height: .leastNonzeroMagnitude )
-                    .background(Color.white)
-                    .transition(.move(edge: .leading))
-                    .zIndex(1)
-                
-            }
-        }
-        
-    }
-}
-struct MenuView: View {
-    @Binding var showMenu: Bool
-    let menuItems: [String]
-    var body: some View {
-        VStack(spacing:20){
-            ForEach(menuItems, id: \.self) { item in
-                Button(action: {
+                }
+                Spacer()
+                Button("Kapat") {
                     withAnimation {
                         showMenu = false
                     }
-                }) {
-                    Text(item)
-                        .foregroundColor(.black)
-                        .padding(.vertical, 25)
-                        .padding(.horizontal)
                 }
+                .padding()
             }
-            Spacer()
-            Button("Kapat") {
-                withAnimation {
-                    showMenu = false
-                }
-            }
-            .padding()
+            
         }
         
     }
     
-}
-
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
+    struct MainView_Previews: PreviewProvider {
+        static var previews: some View {
+            MainView()
+        }
     }
-}
+
