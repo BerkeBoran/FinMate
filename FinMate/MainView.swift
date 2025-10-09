@@ -96,6 +96,8 @@ struct MainView: View {
                             switch item {
                             case "Harcamalar":
                                 ExpensesView(viewModel: viewModel)
+                            case "Gelirler":
+                                IncomeView(viewModel: viewModel)
                             default:
                                 EmptyView()
                             }
