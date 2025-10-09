@@ -3,52 +3,55 @@ import SwiftUI
 struct MainView: View {
     @StateObject var viewModel = TransactionViewModel()
     @State private var showMenu=false
+    @State private var path = NavigationPath()
     let menuItems: [String]=["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ayarlar"]
+    
     
     var body: some View {
         ZStack(alignment: .leading){
             if !showMenu{
-                NavigationView {
-                    VStack(spacing: 20) {
-                        Text("Harcamalar")
-                            .font(.largeTitle)
-                            .bold()
-                            .padding(.top, 40)
-                            .navigationBarTitle("FinMate", displayMode: .inline)
-                            .navigationBarItems(leading: Button(action: {
-                                withAnimation {
-                                    self.showMenu.toggle()
+                NavigationStack(path: $path){
+                        VStack(spacing: 20) {
+                            Text("Harcamalar")
+                                .font(.largeTitle)
+                                .bold()
+                                .padding(.top, 40)
+                                .navigationBarTitle("FinMate", displayMode: .inline)
+                                .navigationBarItems(leading: Button(action: {
+                                    withAnimation {
+                                        self.showMenu.toggle()
+                                    }
+                                }) {
+                                    Image(systemName: "line.horizontal.3")
+                                        .imageScale(.large)
+                                })
+                            HStack(spacing: 20) {
+                                
+                                NavigationLink(destination: AddIncomeView(viewModel: viewModel)) {
+                                    HStack{
+                                        Image(systemName: "plus.circle")
+                                        Text("Gelir Ekle")
+                                    }
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.green)
+                                    .cornerRadius(10)
                                 }
-                            }) {
-                                Image(systemName: "line.horizontal.3")
-                                    .imageScale(.large)
-                            })
-                        HStack(spacing: 20) {
-                            
-                            NavigationLink(destination: AddIncomeView(viewModel: viewModel)) {
-                                HStack{
-                                    Image(systemName: "plus.circle")
-                                    Text("Gelir Ekle")
+                                
+                                NavigationLink(destination: AddExpenseView(viewModel: viewModel)){
+                                    HStack{
+                                        Image(systemName: "minus.circle")
+                                        Text("Gider Ekle")
+                                    }
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.red)
+                                    .cornerRadius(10)
                                 }
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.green)
-                                .cornerRadius(10)
                             }
                             
-                            NavigationLink(destination: AddExpenseView(viewModel: viewModel)){
-                                HStack{
-                                    Image(systemName: "minus.circle")
-                                    Text("Gider Ekle")
-                                }
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.red)
-                                .cornerRadius(10)
-                            }
-                        }
                             
                             //Grafiğin yeri
                             VStack(alignment: .leading) {
@@ -89,8 +92,19 @@ struct MainView: View {
                             
                             Spacer()
                         }
+                        .navigationDestination(for: String.self) { item in
+                            switch item {
+                            case "Harcamalar":
+                                ExpensesView(viewModel: viewModel)
+                            default:
+                                EmptyView()
+                            }
+                        }
+                    
                     }
-                }
+                
+            }
+            
                 else  {
                     Color.black.opacity(0.3)
                         .ignoresSafeArea()
@@ -100,18 +114,19 @@ struct MainView: View {
                             }
                         }
                     
-                    MenuView(showMenu: $showMenu,menuItems: menuItems)
+                    MenuView(path: $path,showMenu: $showMenu,menuItems: menuItems)
                         .frame(width: 250,height: .leastNonzeroMagnitude )
                         .background(Color.white)
                         .transition(.move(edge: .leading))
                         .zIndex(1)
-                    
                 }
             }
-            
+
         }
     }
     struct MenuView: View {
+        @Binding var path: NavigationPath
+        @ObservedObject var viewModel = TransactionViewModel()
         @Binding var showMenu: Bool
         let menuItems: [String]
         var body: some View {
@@ -121,6 +136,7 @@ struct MainView: View {
                         withAnimation {
                             showMenu = false
                         }
+                        path.append(item)
                     }) {
                         Text(item)
                             .foregroundColor(.black)
@@ -140,10 +156,11 @@ struct MainView: View {
         }
         
     }
-    
-    struct MainView_Previews: PreviewProvider {
-        static var previews: some View {
-            MainView()
-        }
+
+
+struct MainView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainView()
     }
+}
 

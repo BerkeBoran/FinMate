@@ -28,4 +28,5 @@ class TransactionViewModel: ObservableObject {
     var balance: Double {
         totalIncome - totalExpense
     }
+
 }
