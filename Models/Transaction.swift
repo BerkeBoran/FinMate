@@ -17,4 +17,5 @@ struct Transaction: Identifiable, Codable {
     var amount: Double
     var date: Date
     var type: TransactionType
+    var category: String
 }

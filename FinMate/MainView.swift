@@ -89,6 +89,8 @@ struct MainView: View {
                             IncomeView(viewModel: viewModel)
                         case "Raporlar":
                             ReportsView(viewModel: viewModel)
+                        case "Kategoriler":
+                            CategoryView(viewModel: viewModel)
                         default:
                             EmptyView()
                         }

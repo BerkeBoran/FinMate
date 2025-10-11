@@ -9,8 +9,8 @@ import Foundation
 class TransactionViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
     
-    func addTransaction(title: String, amount: Double, type: TransactionType) {
-        let newTransaction = Transaction(title: title, amount: amount, date: Date(), type: type)
+    func addTransaction(title: String, amount: Double, type: TransactionType,category: String) {
+        let newTransaction = Transaction(title: title, amount: amount, date: Date(), type: type,category: category)
         transactions.append(newTransaction)
     }
     func deleteTransaction(at offsets: IndexSet) {
@@ -98,4 +98,20 @@ class TransactionViewModel: ObservableObject {
         return dailyData.sorted { $0.0 < $1.0 }
     }
     
+    
 }
+extension TransactionViewModel {
+    
+    func transactions(for category: String) -> [Transaction] {
+        transactions.filter { $0.category == category }
+    }
+    
+    func totalAmount(for category: String, period: Calendar.Component, referenceDate: Date = Date()) -> Double {
+        let calendar = Calendar.current
+        let filtered = transactions(for: category).filter { tx in
+            calendar.isDate(tx.date, equalTo: referenceDate, toGranularity: period)
+        }
+        return filtered.reduce(0) { $0 + $1.amount }
+    }
+}
+
