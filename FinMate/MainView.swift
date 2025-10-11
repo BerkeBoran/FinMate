@@ -55,18 +55,7 @@ struct MainView: View {
                         
                         //Grafiğin yeri
                         VStack(alignment: .leading) {
-                            Text("Harcama Listesi")
-                                .font(.headline)
-                                .padding(.horizontal)
-                            
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(height: 250)
-                                .overlay(
-                                    Text("Liste burada gösterilecek")
-                                        .foregroundColor(.gray)
-                                )
-                                .padding(.horizontal)
+                            BarChartView(viewModel: viewModel)
                         }
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 15) {
