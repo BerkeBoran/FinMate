@@ -10,12 +10,3 @@ enum TransactionType: String, Codable {
     case income = "income"
     case expense = "Expense"
 }
-
-struct Transaction: Identifiable, Codable {
-    var id = UUID()
-    var title: String
-    var amount: Double
-    var date: Date
-    var type: TransactionType
-    var category: String
-}
