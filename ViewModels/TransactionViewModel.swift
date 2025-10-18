@@ -46,7 +46,11 @@ class TransactionViewModel: ObservableObject {
         save()
      }
     func deleteTransaction(at offsets: IndexSet) {
-        transactions.remove(atOffsets: offsets)
+        offsets.forEach { index in
+              let transaction = transactions[index]
+              context.delete(transaction) 
+          }
+          save()
     }
     
     var totalIncome: Double {
