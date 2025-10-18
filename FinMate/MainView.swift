@@ -11,8 +11,8 @@ struct MainView: View {
         ZStack(alignment: .leading){
             if !showMenu{
                 NavigationStack(path: $path){
-                    VStack(spacing: 20) {
-                        Text("Harcamalar")
+                    VStack(spacing: 30) {
+                        Text("Güncel Bakiye: \(viewModel.balance, specifier: "%.2f") TL")
                             .font(.largeTitle)
                             .bold()
                             .padding(.top, 40)
@@ -53,13 +53,12 @@ struct MainView: View {
                         }
                         
                         
-                        //Grafiğin yeri
                         VStack(alignment: .leading) {
                             BarChartView(viewModel: viewModel)
                         }
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 15) {
-                                ForEach(["Food","Transport","Bills","Shopping","Other"], id: \.self) { category in
+                                ForEach(["Yemek","Ulaşım","Faturalar","Market","Kredi Kartı","Giyim","Eğlence","Kira","Diğer"], id: \.self) { category in
                                     VStack {
                                         Image(systemName: "folder.circle.fill")
                                             .resizable()
