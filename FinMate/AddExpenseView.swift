@@ -37,7 +37,8 @@ struct AddExpenseView: View {
             .padding()
             Button(action: {
                 if let amountDouble = Double(amount) {
-                    viewModel.addTransaction(title: title, amount: amountDouble, type: .expense)
+                    
+                    viewModel.addTransaction(title: title, amount: amountDouble, type: .expense,category: viewModel.category(for: title))
                     title = ""
                     amount = ""
                 }

@@ -13,12 +13,12 @@ struct ExpensesView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.transactions.filter { $0.type == .expense }) { transaction in
+                ForEach(viewModel.transactions.filter { $0.type == TransactionType.expense.rawValue }) { transaction in
                     HStack {
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(transaction.title)
+                            Text(transaction.title ?? "Başlıksız")
                                 .font(.headline)
-                            Text(transaction.date, style: .date)
+                            Text(transaction.date ?? Date(), style: .date)
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }

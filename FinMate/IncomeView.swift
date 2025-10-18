@@ -12,12 +12,12 @@ struct IncomeView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.transactions.filter { $0.type == .income }) { transaction in
+                ForEach(viewModel.transactions.filter { $0.type == TransactionType.income.rawValue }) { transaction in
                     HStack {
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(transaction.title)
+                            Text(transaction.title ?? "Başlık Yok")
                                 .font(.headline)
-                            Text(transaction.date, style: .date)
+                            Text(transaction.date ?? Date(), style: .date)
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }

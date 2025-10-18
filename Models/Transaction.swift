@@ -7,7 +7,7 @@
 
 import Foundation
 enum TransactionType: String, Codable {
-    case income = "Income"
+    case income = "income"
     case expense = "Expense"
 }
 

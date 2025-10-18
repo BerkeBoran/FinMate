@@ -41,7 +41,7 @@ struct AddIncomeView: View {
                 
                 Button(action: {
                     if let amountDouble = Double(amount) {
-                        viewModel.addTransaction(title: title, amount: amountDouble, type: .income)
+                        viewModel.addTransaction(title: title, amount: amountDouble, type: .income,category: viewModel.category(for: title))
                         title = ""
                         amount = ""
                     }

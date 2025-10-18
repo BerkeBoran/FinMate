@@ -37,10 +37,10 @@ struct CategorySelectedView: View {
                 .padding()
             List(viewModel.transactions(for: category)) { tx in
                 HStack {
-                    Text(tx.title)
+                    Text(tx.title ?? "Başlık Yok")
                     Spacer()
                     Text("\(tx.amount, specifier: "%.2f")")
-                    Text(tx.date, style: .date)
+                    Text(tx.date ?? Date(), style: .date)
                         .foregroundColor(.gray)
                         .font(.caption)
                 }
