@@ -4,7 +4,7 @@ struct MainView: View {
     @StateObject var viewModel = TransactionViewModel()
     @State private var showMenu=false
     @State private var path = NavigationPath()
-    let menuItems: [String]=["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ayarlar"]
+    let menuItems: [String]=["Harcamalar", "Gelirler", "Kategoriler", "Raporlar","Ödeme Takvimi" ,"Ayarlar"]
     
     
     var body: some View {
@@ -90,6 +90,9 @@ struct MainView: View {
                             ReportsView(viewModel: viewModel)
                         case "Kategoriler":
                             CategoryView(viewModel: viewModel)
+                        case "Ödeme Takvimi":
+                            PaymentScheduleView()
+                            
                         default:
                             EmptyView()
                         }
@@ -152,9 +155,8 @@ struct MenuView: View {
 }
 
 
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
-    }
+#Preview {
+    MainView()
 }
+
 
