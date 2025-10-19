@@ -134,7 +134,6 @@ class TransactionViewModel: ObservableObject {
         return dailyData.sorted { $0.0 < $1.0 }
     }
     
-    
 }
 extension TransactionViewModel {
     
