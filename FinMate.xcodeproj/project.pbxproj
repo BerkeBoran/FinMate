@@ -11,6 +11,7 @@
 		28067E572E96F6A400954D2B /* TransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28067E562E96F6A400954D2B /* TransactionViewModel.swift */; };
 		283827062EA3ED500073E260 /* FinMateModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 283827042EA3ED500073E260 /* FinMateModel.xcdatamodeld */; };
 		283827092EA3EE8D0073E260 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283827082EA3EE8D0073E260 /* PersistenceController.swift */; };
+		289AD5822EA565A900B03C4D /* PaymentScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289AD5812EA565A900B03C4D /* PaymentScheduleViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,7 @@
 		28067E562E96F6A400954D2B /* TransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewModel.swift; sourceTree = "<group>"; };
 		283827052EA3ED500073E260 /* FinMateModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinMateModel.xcdatamodel; sourceTree = "<group>"; };
 		283827082EA3EE8D0073E260 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		289AD5812EA565A900B03C4D /* PaymentScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentScheduleViewModel.swift; sourceTree = "<group>"; };
 		28C5F8312E9568CC009BD5D9 /* FinMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -52,6 +54,7 @@
 			isa = PBXGroup;
 			children = (
 				28067E562E96F6A400954D2B /* TransactionViewModel.swift */,
+				289AD5812EA565A900B03C4D /* PaymentScheduleViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -161,6 +164,7 @@
 				28067E542E96F59F00954D2B /* Transaction.swift in Sources */,
 				28067E572E96F6A400954D2B /* TransactionViewModel.swift in Sources */,
 				283827062EA3ED500073E260 /* FinMateModel.xcdatamodeld in Sources */,
+				289AD5822EA565A900B03C4D /* PaymentScheduleViewModel.swift in Sources */,
 				283827092EA3EE8D0073E260 /* PersistenceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
