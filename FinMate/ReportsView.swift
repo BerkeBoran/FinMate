@@ -17,56 +17,144 @@ struct ReportsView: View {
     @ObservedObject var viewModel: TransactionViewModel
     @State private var showSheet = false
     @State private var selectedReport: ReportType = .daily
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView {
-            VStack {
-                Button(action: {
-                    showSheet.toggle()
-                }) {
-                    HStack {
-                        Text("Rapor Tipi: \(selectedReport.rawValue)")
-                        Image(systemName: "chevron.up.chevron.down")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
-                }
-                .sheet(isPresented: $showSheet) {
-                    VStack(spacing: 20) {
-                        ForEach(ReportType.allCases, id: \.self) { type in
-                            Button(type.rawValue) {
-                                selectedReport = type
-                                showSheet = false
-                            }
+        ZStack {
+            // Background
+            Color.midnightBackground.ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Header
+                HStack {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.white)
                             .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue.opacity(0.2))
-                            .cornerRadius(8)
-                        }
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(Circle())
                     }
-                    .padding()
+                    Spacer()
+                    Text("Raporlar")
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(.white)
+                    Spacer()
+                    // Filter Button
+                    Button(action: { showSheet.toggle() }) {
+                        Image(systemName: "slider.horizontal.3")
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.neonPurple.opacity(0.8))
+                            .clipShape(Circle())
+                            .shadow(color: .neonPurple.opacity(0.5), radius: 10)
+                    }
                 }
+                .padding()
                 
-                List {
-                    let reports: [(date: Date, income: Double, expense: Double)] = getReports()
-                    ForEach(reports, id: \.date) { report in
-                        HStack {
-                            Text(formatDate(report.date, for: selectedReport))
-                                .frame(width: 100, alignment: .leading)
-                            Spacer()
-                            Text("Gelir: \(report.income, specifier: "%.2f")₺")
-                                .foregroundColor(.green)
-                            Spacer()
-                            Text("Gider: \(report.expense, specifier: "%.2f")₺")
-                                .foregroundColor(.red)
+                // Content
+                VStack(spacing: 20) {
+                    // Selected Filter Display
+                    HStack {
+                        Text("Görüntülenen: ")
+                            .foregroundColor(.gray)
+                        Text(selectedReport.rawValue)
+                            .bold()
+                            .foregroundColor(.neonBlue)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    
+                    ScrollView {
+                        VStack(spacing: 15) {
+                            let reports: [(date: Date, income: Double, expense: Double)] = getReports()
+                            
+                            if reports.isEmpty {
+                                Text("Henüz veri yok.")
+                                    .foregroundColor(.gray)
+                                    .padding(.top, 50)
+                            } else {
+                                ForEach(reports, id: \.date) { report in
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(formatDate(report.date, for: selectedReport))
+                                                .font(.headline)
+                                                .foregroundColor(.white)
+                                            Text(getDayName(date: report.date))
+                                                .font(.caption)
+                                                .foregroundColor(.gray)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        VStack(alignment: .trailing, spacing: 5) {
+                                            HStack {
+                                                Image(systemName: "arrow.down.left")
+                                                    .font(.caption2)
+                                                Text("\(report.income, specifier: "%.2f")₺")
+                                            }
+                                            .foregroundColor(.neonGreen)
+                                            .font(.subheadline)
+                                            .bold()
+                                            
+                                            HStack {
+                                                Image(systemName: "arrow.up.right")
+                                                    .font(.caption2)
+                                                Text("\(report.expense, specifier: "%.2f")₺")
+                                            }
+                                            .foregroundColor(.neonRed)
+                                            .font(.subheadline)
+                                            .bold()
+                                        }
+                                    }
+                                    .padding()
+                                    .glassCard()
+                                }
+                            }
                         }
-                        .padding(.vertical, 5)
+                        .padding(.horizontal)
+                        .padding(.bottom, 20)
                     }
                 }
             }
-            .navigationTitle("Raporlar")
-            .navigationBarTitleDisplayMode(.inline)
+        }
+        .navigationBarHidden(true)
+        .sheet(isPresented: $showSheet) {
+            ZStack {
+                Color.midnightBackground.ignoresSafeArea()
+                
+                VStack(spacing: 25) {
+                    Text("Rapor Tipi Seçin")
+                        .font(.title2)
+                        .bold()
+                        .foregroundColor(.white)
+                        .padding(.top, 20)
+                    
+                    ForEach(ReportType.allCases, id: \.self) { type in
+                        Button(action: {
+                            selectedReport = type
+                            showSheet = false
+                        }) {
+                            Text(type.rawValue)
+                                .font(.headline)
+                                .foregroundColor(selectedReport == type ? .black : .white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(selectedReport == type ? Color.neonBlue : Color.white.opacity(0.1))
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                                )
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+                .presentationDetents([.height(350)])
+                .presentationDragIndicator(.visible)
+            }
         }
     }
     
@@ -87,13 +175,20 @@ struct ReportsView: View {
         
         switch reportType {
         case .daily:
-            formatter.dateFormat = "dd.MM.yyyy"
+            formatter.dateFormat = "dd MMMM yyyy"
         case .monthly:
             formatter.dateFormat = "MMMM yyyy"
         case .yearly:
             formatter.dateFormat = "yyyy"
         }
         
+        return formatter.string(from: date)
+    }
+    
+    private func getDayName(date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "tr_TR")
+        formatter.dateFormat = "EEEE"
         return formatter.string(from: date)
     }
 }

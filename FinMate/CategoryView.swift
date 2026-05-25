@@ -6,19 +6,32 @@
 //
 
 import SwiftUI
+
 struct CategoryView: View {
     @ObservedObject var viewModel: TransactionViewModel
-    let categories = ["Yemek", "Ulaşım", "Faturalar", "Market Alışverişi", "Eğlence","Giyim","Kira Ödemeleri","Kredi Kartı Ödemeleri", "Diğer"]
 
     var body: some View {
-        List(categories, id: \.self) { category in
-            NavigationLink(destination: CategorySelectedView(viewModel: viewModel, category: category)) {
-                Text(category)
+        List {
+            Section("Gider Kategorileri") {
+                ForEach(ExpenseCategories.list, id: \.self) { category in
+                    NavigationLink(destination: CategorySelectedView(viewModel: viewModel, category: category)) {
+                        Text(category)
+                    }
+                }
+            }
+            Section("Gelir Kategorileri") {
+                ForEach(IncomeCategories.list.filter { $0 != "Diğer" }, id: \.self) { category in
+                    NavigationLink(destination: CategorySelectedView(viewModel: viewModel, category: category)) {
+                        Text(category)
+                    }
+                }
             }
         }
         .navigationTitle("Kategoriler")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
 #Preview {
-CategoryView(viewModel: TransactionViewModel())}
+    CategoryView(viewModel: TransactionViewModel())
+}
