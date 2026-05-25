@@ -303,6 +303,8 @@
 				DEVELOPMENT_TEAM = 76PR2J5GF3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Fişlerinizi taramak için kameraya erişim gereklidir.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Fiş görsellerini galeriden seçmek için fotoğraf kütüphanesine erişim gereklidir.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -331,6 +333,8 @@
 				DEVELOPMENT_TEAM = 76PR2J5GF3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Fişlerinizi taramak için kameraya erişim gereklidir.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Fiş görsellerini galeriden seçmek için fotoğraf kütüphanesine erişim gereklidir.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
