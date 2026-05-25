@@ -67,6 +67,28 @@ final class PriceStore {
         quotes[symbol]
     }
 
+    // MARK: - Currency Conversion (used by Settings & main views)
+
+    /// TL tutarını verilen para birimi sembolüne dönüştürür.
+    /// Henüz kur yüklenmediyse veya sembol desteklenmiyorsa TL değerini olduğu gibi döner.
+    func convertFromTRY(_ tlAmount: Double, toSymbol symbol: String) -> Double {
+        guard symbol != "₺" else { return tlAmount }
+        let asset: AssetSymbol?
+        switch symbol {
+        case "$": asset = .usd
+        case "€": asset = .eur
+        case "£": asset = .gbp
+        default: asset = nil
+        }
+        guard let asset, let q = quotes[asset], q.buyTRY > 0 else { return tlAmount }
+        return tlAmount / q.buyTRY
+    }
+
+    /// Kurların hazır olup olmadığını verir (en az USD/EUR/GBP'den birinin yüklenmiş olması).
+    var hasRates: Bool {
+        quotes[.usd] != nil || quotes[.eur] != nil || quotes[.gbp] != nil
+    }
+
     // Kripto endpoint'i USD bazlı döner; USD/TRY ile çarpıp TRY'ye çevirir.
     private func normalize(_ raw: [Quote]) -> [AssetSymbol: Quote] {
         // CollectAPI bazı sembollerde birden fazla satır döndürüyor (örn. "Çeyrek Eski"/"Çeyrek Yeni"
