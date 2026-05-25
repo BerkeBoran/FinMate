@@ -71,6 +71,46 @@ class TransactionViewModel: ObservableObject {
         }
         save()
     }
+
+    // MARK: - Bulk Operations (used by SettingsView)
+
+    /// Tüm gelir/gider kayıtlarını ve bağlı fiş görsellerini siler.
+    func deleteAllTransactions() {
+        let imagePaths = Set(transactions.compactMap { $0.receiptImagePath })
+        for tx in transactions {
+            context.delete(tx)
+        }
+        for path in imagePaths {
+            ReceiptStorage.delete(path)
+        }
+        save()
+    }
+
+    /// Sadece fiş içeren işlemleri ve onların görsellerini siler.
+    func deleteAllReceipts() {
+        let receiptTxs = transactions.filter { $0.receiptID != nil }
+        let imagePaths = Set(receiptTxs.compactMap { $0.receiptImagePath })
+        for tx in receiptTxs {
+            context.delete(tx)
+        }
+        for path in imagePaths {
+            ReceiptStorage.delete(path)
+        }
+        save()
+    }
+
+    /// İşlemleri korur, sadece kaydedilmiş fiş görsellerini siler.
+    func clearAllReceiptImages() {
+        let receiptTxs = transactions.filter { $0.receiptImagePath != nil }
+        let imagePaths = Set(receiptTxs.compactMap { $0.receiptImagePath })
+        for path in imagePaths {
+            ReceiptStorage.delete(path)
+        }
+        for tx in receiptTxs {
+            tx.receiptImagePath = nil
+        }
+        save()
+    }
     
     var totalIncome: Double {
         transactions.filter { $0.type == TransactionType.income.rawValue }.reduce(0) { $0 + $1.amount }
