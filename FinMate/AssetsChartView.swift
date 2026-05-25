@@ -6,20 +6,28 @@ struct AssetsChartView: View {
     @Environment(PriceStore.self) private var priceStore
     @EnvironmentObject private var investments: InvestmentStore
 
+    @AppStorage(SettingsKeys.hideBalance) private var hideBalance: Bool = false
+    @AppStorage(SettingsKeys.currencySymbol) private var currencySymbol: String = "₺"
+    @AppStorage(SettingsKeys.decimalPlaces) private var decimalPlaces: Int = 2
+
     private func quoteLookup(_ symbol: AssetSymbol) -> Quote? {
         priceStore.quote(for: symbol)
     }
 
-    private var investmentValue: Double {
+    private var investmentValueTL: Double {
         investments.grandTotal(quoteLookup)
     }
 
-    private var cashBalance: Double {
+    private var cashBalanceTL: Double {
         viewModel.balance
     }
 
-    private var totalAssets: Double {
-        cashBalance + investmentValue
+    private var totalAssetsTL: Double {
+        cashBalanceTL + investmentValueTL
+    }
+
+    private func display(_ tl: Double) -> Double {
+        priceStore.convertFromTRY(tl, toSymbol: currencySymbol)
     }
 
     var body: some View {
@@ -27,71 +35,87 @@ struct AssetsChartView: View {
 
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 10) {
-                StatMini(label: "Nakit", value: cashBalance, color: .neonBlue)
-                StatMini(label: "Yatırım", value: investmentValue, color: .neonGreen)
-                StatMini(label: "Toplam", value: totalAssets, color: .neonPurple)
+                StatMini(label: "Nakit", value: display(cashBalanceTL), symbol: currencySymbol, color: .neonBlue, hidden: hideBalance, decimals: decimalPlaces)
+                StatMini(label: "Yatırım", value: display(investmentValueTL), symbol: currencySymbol, color: .neonGreen, hidden: hideBalance, decimals: decimalPlaces)
+                StatMini(label: "Toplam", value: display(totalAssetsTL), symbol: currencySymbol, color: .neonPurple, hidden: hideBalance, decimals: decimalPlaces)
             }
             .padding(.horizontal)
 
-            Chart {
-                ForEach(series, id: \.date) { point in
-                    LineMark(
-                        x: .value("Ay", point.date),
-                        y: .value("Bakiye", point.balance)
-                    )
-                    .foregroundStyle(Color.neonBlue)
-                    .interpolationMethod(.catmullRom)
-                    .lineStyle(StrokeStyle(lineWidth: 2.5))
-
-                    AreaMark(
-                        x: .value("Ay", point.date),
-                        y: .value("Bakiye", point.balance)
-                    )
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.neonBlue.opacity(0.35), Color.neonBlue.opacity(0.0)],
-                            startPoint: .top, endPoint: .bottom
+            ZStack {
+                Chart {
+                    ForEach(series, id: \.date) { point in
+                        let displayBalance = display(point.balance)
+                        LineMark(
+                            x: .value("Ay", point.date),
+                            y: .value("Bakiye", displayBalance)
                         )
-                    )
-                    .interpolationMethod(.catmullRom)
+                        .foregroundStyle(Color.neonBlue)
+                        .interpolationMethod(.catmullRom)
+                        .lineStyle(StrokeStyle(lineWidth: 2.5))
 
-                    PointMark(
-                        x: .value("Ay", point.date),
-                        y: .value("Bakiye", point.balance)
-                    )
-                    .foregroundStyle(Color.neonBlue)
-                    .symbolSize(36)
+                        AreaMark(
+                            x: .value("Ay", point.date),
+                            y: .value("Bakiye", displayBalance)
+                        )
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color.neonBlue.opacity(0.35), Color.neonBlue.opacity(0.0)],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                        .interpolationMethod(.catmullRom)
+
+                        PointMark(
+                            x: .value("Ay", point.date),
+                            y: .value("Bakiye", displayBalance)
+                        )
+                        .foregroundStyle(Color.neonBlue)
+                        .symbolSize(36)
+                    }
+
+                    if let last = series.last {
+                        PointMark(
+                            x: .value("Ay", last.date),
+                            y: .value("Toplam", display(last.balance + investmentValueTL))
+                        )
+                        .foregroundStyle(Color.neonPurple)
+                        .symbolSize(80)
+                        .annotation(position: .top, alignment: .trailing) {
+                            Text("Bugün")
+                                .font(.caption2)
+                                .foregroundColor(.neonPurple)
+                        }
+                    }
                 }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .month)) { _ in
+                        AxisGridLine().foregroundStyle(Color.white.opacity(0.08))
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).locale(Locale(identifier: "tr_TR")))
+                            .foregroundStyle(Color.gray)
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading, values: .automatic) { _ in
+                        AxisGridLine().foregroundStyle(Color.white.opacity(0.08))
+                        AxisValueLabel().foregroundStyle(hideBalance ? .clear : Color.gray)
+                    }
+                }
+                .frame(height: 200)
+                .padding(.horizontal)
+                .opacity(hideBalance ? 0.15 : 1.0)
+                .blur(radius: hideBalance ? 8 : 0)
 
-                if let last = series.last {
-                    PointMark(
-                        x: .value("Ay", last.date),
-                        y: .value("Toplam", last.balance + investmentValue)
-                    )
-                    .foregroundStyle(Color.neonPurple)
-                    .symbolSize(80)
-                    .annotation(position: .top, alignment: .trailing) {
-                        Text("Bugün")
-                            .font(.caption2)
-                            .foregroundColor(.neonPurple)
+                if hideBalance {
+                    HStack(spacing: 8) {
+                        Image(systemName: "eye.slash.fill")
+                            .foregroundColor(.gray)
+                        Text("Bakiye Gizli")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundColor(.gray)
                     }
                 }
             }
-            .chartXAxis {
-                AxisMarks(values: .stride(by: .month)) { value in
-                    AxisGridLine().foregroundStyle(Color.white.opacity(0.08))
-                    AxisValueLabel(format: .dateTime.month(.abbreviated).locale(Locale(identifier: "tr_TR")))
-                        .foregroundStyle(Color.gray)
-                }
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading, values: .automatic) { _ in
-                    AxisGridLine().foregroundStyle(Color.white.opacity(0.08))
-                    AxisValueLabel().foregroundStyle(Color.gray)
-                }
-            }
-            .frame(height: 200)
-            .padding(.horizontal)
+            .animation(.easeInOut, value: hideBalance)
         }
     }
 }
@@ -99,7 +123,10 @@ struct AssetsChartView: View {
 private struct StatMini: View {
     let label: String
     let value: Double
+    let symbol: String
     let color: Color
+    let hidden: Bool
+    let decimals: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -107,11 +134,12 @@ private struct StatMini: View {
                 .font(.caption2).fontWeight(.semibold)
                 .foregroundColor(.gray)
                 .tracking(0.8)
-            Text(formatTL(value))
+            Text(hidden ? "•••• \(symbol)" : formatted)
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
+                .contentTransition(.opacity)
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -121,13 +149,17 @@ private struct StatMini: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(color.opacity(0.4), lineWidth: 1)
         )
+        .animation(.easeInOut, value: hidden)
     }
 
-    private func formatTL(_ v: Double) -> String {
+    private var formatted: String {
         let f = NumberFormatter()
         f.numberStyle = .decimal
-        f.maximumFractionDigits = 0
+        f.maximumFractionDigits = decimals
+        f.minimumFractionDigits = 0
         f.groupingSeparator = "."
-        return "\(f.string(from: NSNumber(value: v)) ?? "\(Int(v))") TL"
+        f.decimalSeparator = ","
+        let numberPart = f.string(from: NSNumber(value: value)) ?? "\(Int(value))"
+        return "\(numberPart) \(symbol)"
     }
 }

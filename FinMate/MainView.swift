@@ -2,8 +2,15 @@ import SwiftUI
 
 struct MainView: View {
     @StateObject var viewModel = TransactionViewModel()
+    @Environment(PriceStore.self) private var priceStore
     @State private var showMenu = false
     @State private var path = NavigationPath()
+    @AppStorage(SettingsKeys.hideBalance) private var hideBalance: Bool = false
+    @AppStorage(SettingsKeys.currencySymbol) private var currencySymbol: String = "₺"
+    @AppStorage(SettingsKeys.decimalPlaces) private var decimalPlaces: Int = 2
+    @AppStorage(SettingsKeys.userName) private var userName: String = "Kullanıcı"
+    @AppStorage(SettingsKeys.lastName) private var lastName: String = ""
+    @AppStorage(SettingsKeys.userIcon) private var userIcon: String = "person.crop.circle.fill"
     let menuItems: [String] = ["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ödeme Takvimi", "Ayarlar", "Yatırımlarım", "Fiş Okut", "Fişlerim"]
     
     var body: some View {
@@ -44,10 +51,18 @@ struct MainView: View {
                                     .foregroundColor(.gray)
                                     .tracking(1)
                                 
-                                Text("\(viewModel.balance, specifier: "%.2f") TL")
-                                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                                    .foregroundColor(.white)
-                                    .shadow(color: .neonBlue.opacity(0.5), radius: 10, x: 0, y: 0)
+                                Group {
+                                    if hideBalance {
+                                        Text("•••••• \(currencySymbol)")
+                                    } else {
+                                        Text("\(formattedBalance) \(currencySymbol)")
+                                    }
+                                }
+                                .font(.system(size: 40, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                                .shadow(color: .neonBlue.opacity(0.5), radius: 10, x: 0, y: 0)
+                                .contentTransition(.opacity)
+                                .animation(.easeInOut, value: hideBalance)
                             }
                             .padding(.top, 20)
 
@@ -122,6 +137,7 @@ struct MainView: View {
                         case "Yatırımlarım": InvestmentsView()
                         case "Fiş Okut": ScanReceiptView(transactionVM: viewModel)
                         case "Fişlerim": ReceiptsView(viewModel: viewModel)
+                        case "Ayarlar": SettingsView(viewModel: viewModel)
                         default: EmptyView()
                         }
                     }
@@ -130,11 +146,27 @@ struct MainView: View {
                 Color.black.opacity(0.6).ignoresSafeArea()
                     .onTapGesture { withAnimation { showMenu = false } }
                 
-                MenuView(path: $path, showMenu: $showMenu, menuItems: menuItems)
+                MenuView(path: $path, showMenu: $showMenu, menuItems: menuItems, userName: fullName, userIcon: userIcon)
                     .transition(.move(edge: .leading))
                     .zIndex(1)
             }
         }
+    }
+
+    private var fullName: String {
+        let combined = "\(userName) \(lastName)".trimmingCharacters(in: .whitespaces)
+        return combined.isEmpty ? "Kullanıcı" : combined
+    }
+
+    private var formattedBalance: String {
+        let converted = priceStore.convertFromTRY(viewModel.balance, toSymbol: currencySymbol)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = decimalPlaces
+        formatter.maximumFractionDigits = decimalPlaces
+        formatter.groupingSeparator = "."
+        formatter.decimalSeparator = ","
+        return formatter.string(from: NSNumber(value: converted)) ?? String(format: "%.\(decimalPlaces)f", converted)
     }
 }
 
@@ -199,21 +231,24 @@ struct MenuView: View {
     @Binding var path: NavigationPath
     @Binding var showMenu: Bool
     let menuItems: [String]
-    
+    let userName: String
+    let userIcon: String
+
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 0) {
                 // Menu Header
                 HStack {
-                    Image(systemName: "person.crop.circle.fill")
+                    Image(systemName: userIcon)
                         .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: 50, height: 50)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.neonBlue)
                     VStack(alignment: .leading) {
                         Text("Merhaba")
                             .font(.caption)
                             .foregroundColor(.gray)
-                        Text("Kullanıcı")
+                        Text(userName)
                             .font(.title3)
                             .bold()
                             .foregroundColor(.white)
