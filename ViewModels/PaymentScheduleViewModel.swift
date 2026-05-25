@@ -32,6 +32,12 @@ class PaymentScheduleViewModel:ObservableObject {
         }
     }
     
+    /// Kullanıcının Ayarlar'dan açtığı bildirim tercihi.
+    private var remindersEnabled: Bool {
+        // Varsayılan true: anahtar tanımlı değilse aktif kabul ederiz.
+        UserDefaults.standard.object(forKey: "settings.paymentRemindersEnabled") as? Bool ?? true
+    }
+
     func addPayment(title: String, amount: Double, lastPaymentDate: Date, recurring: Bool, repeatType: String) {
         let newPayment = PaymentScheduleEntity(context: context)
         newPayment.id = UUID()
@@ -41,25 +47,20 @@ class PaymentScheduleViewModel:ObservableObject {
         newPayment.recurring = recurring
         newPayment.repeatType = repeatType
         save()
-        if recurring && (repeatType == "Aylık") {
-            NotificationManager.shared.scheduleRepeatingNotificationsMonthly(for: title, amount: amount, lastPaymentDate: lastPaymentDate)
-        }
-        else if ((repeatType == "Aylık")) {
-            NotificationManager.shared.scheduleNotificationMonthly(for: title, amount: amount, lastPaymentDate: lastPaymentDate)
-        }
-        else if recurring && (repeatType == "Yıllık"){
-            NotificationManager.shared.scheduleRepeatingNotificationsYearly(for: title, amount: amount, lastPaymentDate: lastPaymentDate)
-            
-        }
-        else if (repeatType == "Yıllık"){
-            NotificationManager.shared.scheduleNotificationYearly(for: title, amount: amount, lastPaymentDate: lastPaymentDate)
-        }
-        else if recurring && (repeatType == "Haftalık") {
-            NotificationManager.shared.scheduleRepeatingNotificationsWeekly(for: title, amount: amount, lastPaymentDate: lastPaymentDate)
-        }
-        else if (repeatType == "Haftalık"){
-            NotificationManager.shared.scheduleNotificationWeekly(for: title, amount: amount, lastPaymentDate: lastPaymentDate)
-        }
+
+        // Bildirimler kapalıysa hiç zamanlama yapmadan çık.
+        guard remindersEnabled else { return }
+
+        // Tek temiz metoda yönlendiriyoruz: kullanıcının "kaç gün önce" tercihini
+        // ve mutlak tarih bilgisini kullanır, böylece yanlış aya/yıla kaymaz.
+        let id = newPayment.id?.uuidString ?? "\(title)-\(Int(lastPaymentDate.timeIntervalSince1970))"
+        NotificationManager.shared.scheduleReminder(
+            for: title,
+            amount: amount,
+            paymentDate: lastPaymentDate,
+            recurring: recurring,
+            identifier: id
+        )
     }
         
         

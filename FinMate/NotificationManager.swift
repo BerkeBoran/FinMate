@@ -7,16 +7,100 @@
 
 import Foundation
 import UserNotifications
-class NotificationManager {
+
+final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     static let shared = NotificationManager()
-    private init() {}
-    
+    private override init() { super.init() }
+
+    /// Uygulama başlangıcında çağrılır: delegate'i bağlar ve izin ister.
+    func bootstrap() {
+        UNUserNotificationCenter.current().delegate = self
+        requestAuthorization()
+    }
+
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
                 print("Bildirim izni hatası: \(error.localizedDescription)")
             } else {
                 print("Bildirim izni: \(granted ? "Verildi" : "Reddedildi")")
+            }
+        }
+    }
+
+    // MARK: - UNUserNotificationCenterDelegate
+
+    /// Uygulama ön plandayken de bildirim banner+ses ile gözüksün.
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .list, .sound, .badge])
+    }
+
+    /// Kullanıcı bildirime dokunduğunda çağrılır (şu an default davranış yeterli).
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        completionHandler()
+    }
+
+    // MARK: - Smart Reminder API (yeni — PaymentScheduleViewModel kullanır)
+
+    /// Kullanıcı ayarlarından hatırlatma günü sayısı. Yoksa 1 gün önce.
+    private var reminderDaysBefore: Int {
+        let v = UserDefaults.standard.object(forKey: "settings.reminderDaysBefore") as? Int ?? 1
+        return max(1, v)
+    }
+
+    /// Bir ödeme için hatırlatma planlar. recurring true ise her ay aynı günde tekrarlar.
+    /// Tek seferlik durumda ABSOLUTE tarih kullanır (yıl+ay+gün+saat) — yanlış aya kaymaz.
+    func scheduleReminder(for title: String, amount: Double, paymentDate: Date, recurring: Bool, identifier: String? = nil) {
+        let calendar = Calendar.current
+        let daysBefore = reminderDaysBefore
+
+        guard let reminderDate = calendar.date(byAdding: .day, value: -daysBefore, to: paymentDate) else { return }
+
+        // İçerik
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.locale = Locale(identifier: "tr_TR")
+        let content = UNMutableNotificationContent()
+        content.title = "Yaklaşan \(title) ödemesi"
+        content.body = "\(formatter.string(from: paymentDate)) tarihindeki \(String(format: "%.2f", amount)) ₺ ödemenizi unutmayın."
+        content.sound = .default
+
+        let id = identifier ?? "payment.\(title).\(Int(paymentDate.timeIntervalSince1970))"
+
+        // Trigger
+        let trigger: UNNotificationTrigger
+        if recurring {
+            // Her ay aynı günde tekrarla (gün + saat)
+            var comps = DateComponents()
+            comps.day = calendar.component(.day, from: reminderDate)
+            comps.hour = calendar.component(.hour, from: reminderDate)
+            comps.minute = calendar.component(.minute, from: reminderDate)
+            trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: true)
+        } else {
+            // Tek seferlik: ABSOLUTE tarih
+            // Geçmiş tarih olmasın diye kontrol et
+            guard reminderDate > Date() else {
+                print("⚠️ Hatırlatma tarihi (\(reminderDate)) geçmişte, atlanıyor.")
+                return
+            }
+            let comps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: reminderDate)
+            trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+        }
+
+        let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error {
+                print("Hatırlatma planlanırken hata: \(error.localizedDescription)")
+            } else {
+                print("✅ Hatırlatma planlandı: \(id) — tetik: \(reminderDate)")
             }
         }
     }

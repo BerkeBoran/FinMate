@@ -14,8 +14,9 @@ struct FinMateApp: App {
     @StateObject private var investmentStore = InvestmentStore()
 
     init() {
-            NotificationManager.shared.requestAuthorization()
-        }
+        // Delegate'i bağlar + izin ister (ön plandayken banner gözükmesi için şart)
+        NotificationManager.shared.bootstrap()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()
