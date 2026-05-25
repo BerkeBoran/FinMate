@@ -304,6 +304,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Fişlerinizi taramak için kameraya erişim gereklidir.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Uygulamaya yalnızca sizin erişebilmeniz için Face ID / Touch ID kullanılır.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Fiş görsellerini galeriden seçmek için fotoğraf kütüphanesine erişim gereklidir.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -334,6 +335,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Fişlerinizi taramak için kameraya erişim gereklidir.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Uygulamaya yalnızca sizin erişebilmeniz için Face ID / Touch ID kullanılır.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Fiş görsellerini galeriden seçmek için fotoğraf kütüphanesine erişim gereklidir.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
