@@ -17,3 +17,9 @@ Package.resolved
 
 # Local tool settings
 .claude/
+
+# Secrets — gerçek API anahtarları. ASLA commit edilmez.
+FinMate/Config/Secrets.swift
+
+# Bitirme tezi taslağı — kişisel doküman, repo'ya gitmez.
+BitirmeTezi.md

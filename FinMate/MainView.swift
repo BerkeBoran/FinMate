@@ -11,7 +11,7 @@ struct MainView: View {
     @AppStorage(SettingsKeys.userName) private var userName: String = "Kullanıcı"
     @AppStorage(SettingsKeys.lastName) private var lastName: String = ""
     @AppStorage(SettingsKeys.userIcon) private var userIcon: String = "person.crop.circle.fill"
-    let menuItems: [String] = ["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ödeme Takvimi", "Ayarlar", "Yatırımlarım", "Fiş Okut", "Fişlerim"]
+    let menuItems: [String] = ["Harcamalar", "Gelirler", "Kategoriler", "Raporlar", "Ödeme Takvimi", "Yatırımlarım", "Fiş Okut", "Fişlerim", "Ayarlar"]
     
     var body: some View {
         ZStack(alignment: .leading) {
