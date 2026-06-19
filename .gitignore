@@ -9,15 +9,6 @@ xcuserdata/
 build/
 DerivedData/
 
-# Swift Package Manager
-.swiftpm/
-.build/
-Packages/
-Package.resolved
-
-# Local tool settings
-.claude/
-
 # Secrets — gerçek API anahtarları. ASLA commit edilmez.
 FinMate/Config/Secrets.swift
 

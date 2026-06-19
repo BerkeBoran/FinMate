@@ -1,6 +1,14 @@
 # FinMate
 
-Kişisel gelir, gider, yatırım ve fiş takibi yapan, SwiftUI ile yazılmış bir iOS uygulaması. Bitirme tezi kapsamında geliştirilmiştir.
+Kişisel gelir, gider, yatırım ve fiş takibini tek bir yerde toplayan, SwiftUI ile yazılmış bir iOS uygulaması. Bitirme tezi kapsamında geliştirilmiştir.
+
+## İçindekiler
+
+- [Özellikler](#özellikler)
+- [Kullanılan teknolojiler](#kullanılan-teknolojiler)
+- [Klasör yapısı](#klasör-yapısı)
+- [Kurulum](#kurulum)
+- [Geliştirici](#geliştirici)
 
 ## Özellikler
 
@@ -48,6 +56,8 @@ FinMate/
 ```
 
 ## Kurulum
+
+**Gereksinimler:** Xcode 16+, iOS 18.5+ hedef cihaz veya simülatör.
 
 1. Repoyu klonlayın:
    ```bash
