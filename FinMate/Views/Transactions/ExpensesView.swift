@@ -24,6 +24,8 @@ struct ExpensesView: View {
                 }
                 .onDelete(perform: viewModel.deleteTransaction)
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.midnightBackground.ignoresSafeArea())
             .navigationTitle("Harcamalar")
         }
     }

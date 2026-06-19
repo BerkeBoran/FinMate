@@ -29,6 +29,8 @@ struct PaymentScheduleView: View {
                 }
                 .onDelete(perform: viewModel.deletePayment)
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.midnightBackground.ignoresSafeArea())
             .navigationTitle("Ödeme Takvimi")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

@@ -13,6 +13,7 @@ struct FinMateApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.dark)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environment(priceStore)
                 .environmentObject(investmentStore)

@@ -21,6 +21,8 @@ struct CategoryView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.midnightBackground.ignoresSafeArea())
         .navigationTitle("Kategoriler")
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -65,6 +65,8 @@ struct AddIncomeView: View {
 
             Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.midnightBackground.ignoresSafeArea())
         .navigationTitle("Gelir Ekle")
     }
 

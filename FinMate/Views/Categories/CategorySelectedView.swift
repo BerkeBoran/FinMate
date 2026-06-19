@@ -58,7 +58,10 @@ struct CategorySelectedView: View {
                         .fontWeight(.semibold)
                 }
             }
+            .scrollContentBackground(.hidden)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.midnightBackground.ignoresSafeArea())
         .navigationTitle(category)
         .sheet(item: Binding(
             get: { previewImagePath.map { ImagePath(path: $0) } },

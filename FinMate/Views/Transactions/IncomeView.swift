@@ -23,6 +23,8 @@ struct IncomeView: View {
                 }
                 .onDelete(perform: viewModel.deleteTransaction)
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.midnightBackground.ignoresSafeArea())
             .navigationTitle("Gelirler")
         }
     }

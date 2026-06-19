@@ -64,6 +64,9 @@ struct AddExpenseView: View {
 
             Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.midnightBackground.ignoresSafeArea())
+        .navigationTitle("Gider Ekle")
     }
 
     private var canSubmit: Bool {
