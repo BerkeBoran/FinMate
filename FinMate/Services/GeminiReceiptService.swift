@@ -130,7 +130,6 @@ struct GeminiReceiptService {
             throw GeminiError.badResponse(http.statusCode, body)
         }
 
-        // Gemini wraps response in candidates[0].content.parts[0].text (the JSON string)
         struct GeminiResponse: Decodable {
             struct Candidate: Decodable {
                 struct Content: Decodable {
@@ -156,11 +155,9 @@ struct GeminiReceiptService {
 
         do {
             var parsed = try JSONDecoder().decode(ReceiptParseResult.self, from: jsonData)
-            // Server doesn't know about UUIDs — assign fresh ids
             parsed.items = parsed.items.map { item in
                 var copy = item
                 copy.id = UUID()
-                // Defensive: if LLM returns a category outside our list, force Diğer
                 if !categories.contains(copy.category) { copy.category = "Diğer" }
                 return copy
             }

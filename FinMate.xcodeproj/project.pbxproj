@@ -6,20 +6,7 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		28067E542E96F59F00954D2B /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28067E532E96F59F00954D2B /* Transaction.swift */; };
-		28067E572E96F6A400954D2B /* TransactionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28067E562E96F6A400954D2B /* TransactionViewModel.swift */; };
-		283827062EA3ED500073E260 /* FinMateModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 283827042EA3ED500073E260 /* FinMateModel.xcdatamodeld */; };
-		283827092EA3EE8D0073E260 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283827082EA3EE8D0073E260 /* PersistenceController.swift */; };
-		289AD5822EA565A900B03C4D /* PaymentScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 289AD5812EA565A900B03C4D /* PaymentScheduleViewModel.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
-		28067E532E96F59F00954D2B /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
-		28067E562E96F6A400954D2B /* TransactionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewModel.swift; sourceTree = "<group>"; };
-		283827052EA3ED500073E260 /* FinMateModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FinMateModel.xcdatamodel; sourceTree = "<group>"; };
-		283827082EA3EE8D0073E260 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
-		289AD5812EA565A900B03C4D /* PaymentScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentScheduleViewModel.swift; sourceTree = "<group>"; };
 		28C5F8312E9568CC009BD5D9 /* FinMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -42,38 +29,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		28067E522E96F56A00954D2B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				28067E532E96F59F00954D2B /* Transaction.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		28067E552E96F66100954D2B /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				28067E562E96F6A400954D2B /* TransactionViewModel.swift */,
-				289AD5812EA565A900B03C4D /* PaymentScheduleViewModel.swift */,
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		283827072EA3EE450073E260 /* CoreData */ = {
-			isa = PBXGroup;
-			children = (
-				283827042EA3ED500073E260 /* FinMateModel.xcdatamodeld */,
-				283827082EA3EE8D0073E260 /* PersistenceController.swift */,
-			);
-			path = CoreData;
-			sourceTree = "<group>";
-		};
 		28C5F8282E9568CC009BD5D9 = {
 			isa = PBXGroup;
 			children = (
-				283827072EA3EE450073E260 /* CoreData */,
-				28067E552E96F66100954D2B /* ViewModels */,
-				28067E522E96F56A00954D2B /* Models */,
 				28C5F8332E9568CC009BD5D9 /* FinMate */,
 				28C5F8322E9568CC009BD5D9 /* Products */,
 			);
@@ -161,11 +119,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28067E542E96F59F00954D2B /* Transaction.swift in Sources */,
-				28067E572E96F6A400954D2B /* TransactionViewModel.swift in Sources */,
-				283827062EA3ED500073E260 /* FinMateModel.xcdatamodeld in Sources */,
-				289AD5822EA565A900B03C4D /* PaymentScheduleViewModel.swift in Sources */,
-				283827092EA3EE8D0073E260 /* PersistenceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,19 +330,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		283827042EA3ED500073E260 /* FinMateModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				283827052EA3ED500073E260 /* FinMateModel.xcdatamodel */,
-			);
-			currentVersion = 283827052EA3ED500073E260 /* FinMateModel.xcdatamodel */;
-			path = FinMateModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 28C5F8292E9568CC009BD5D9 /* Project object */;
 }

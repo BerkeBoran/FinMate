@@ -22,8 +22,6 @@ struct CollectAPIProvider: PriceProvider {
         return cur + gld + cry
     }
 
-    // MARK: - Endpoints
-
     private func fetchCurrencies() async throws -> [Quote] {
         let url = Self.base.appending(path: "/economy/allCurrency")
         let response: CurrencyResponse = try await get(url)
@@ -58,9 +56,6 @@ struct CollectAPIProvider: PriceProvider {
         let url = Self.base.appending(path: "/economy/cripto")
         let response: CryptoResponse = try await get(url)
         let now = Date.now
-        // CollectAPI kripto endpoint'i fiyatları USD bazında döner.
-        // TL'ye çevirmek için USD/TRY kuruna ihtiyaç var; bunu PriceStore birleştirir.
-        // Burada USD bazlı değeri buyTRY/sellTRY alanlarına aynı koyup PriceStore'da çeviriyoruz.
         return response.result.compactMap { row in
             guard let symbol = cryptoSymbol(for: row.code) else { return nil }
             let price = row.price
@@ -72,8 +67,6 @@ struct CollectAPIProvider: PriceProvider {
             )
         }
     }
-
-    // MARK: - HTTP
 
     private func get<T: Decodable>(_ url: URL) async throws -> T {
         var request = URLRequest(url: url)
@@ -98,8 +91,6 @@ struct CollectAPIProvider: PriceProvider {
             throw PriceProviderError.decoding(error)
         }
     }
-
-    // MARK: - Symbol mapping
 
     private func currencySymbol(for code: String) -> AssetSymbol? {
         switch code.uppercased() {
@@ -130,8 +121,6 @@ struct CollectAPIProvider: PriceProvider {
         }
     }
 }
-
-// MARK: - DTOs
 
 private struct CurrencyResponse: Decodable {
     let success: Bool
